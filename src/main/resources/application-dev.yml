@@ -1,0 +1,14 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  liquibase:
+    contexts: dev
+  jpa:
+    database: h2
+    database-platform: org.hibernate.dialect.H2Dialect
+  datasource:
+    url: jdbc:h2:mem:demo;DB_CLOSE_DELAY=-1
+    username: demo
+    password:
+    driverClassName: org.h2.Driver
