@@ -1,5 +1,8 @@
 package com.cagan.library.book;
 
+import com.cagan.library.filter.InstantFilter;
+import com.cagan.library.filter.IntegerFilter;
+import com.cagan.library.filter.LongFilter;
 import com.cagan.library.filter.StringFilter;
 import lombok.Data;
 
@@ -9,12 +12,13 @@ import java.util.Objects;
 @Data
 public class BookCriteria implements Serializable {
     private static final long serialVersionID = 1L;
-    private Long id;
+    private LongFilter id;
     private StringFilter title;
-    private String publisher;
-    private String genre;
-    private Integer height;
+    private StringFilter publisher;
+    private StringFilter genre;
+    private IntegerFilter height;
     private Boolean distinct;
+    private InstantFilter createdDate;
 
     public StringFilter title() {
         if (title == null) {
@@ -28,10 +32,11 @@ public class BookCriteria implements Serializable {
         return "BookCriteria{" +
                 "id=" + id +
                 ", title=" + title +
-                ", publisher='" + publisher + '\'' +
-                ", genre='" + genre + '\'' +
+                ", publisher=" + publisher +
+                ", genre=" + genre +
                 ", height=" + height +
                 ", distinct=" + distinct +
+                ", createdDate=" + createdDate +
                 '}';
     }
 

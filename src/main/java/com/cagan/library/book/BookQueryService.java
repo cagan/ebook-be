@@ -24,18 +24,27 @@ public class BookQueryService extends QueryService<Book> {
         return bookRepository.findAll(specification, pageable).map(bookViewMapper::toDto);
     }
 
-    private Specification<Book> createSpecification(BookCriteria criteria) {
+    private Specification<Book> createSpecification(final BookCriteria criteria) {
         Specification<Book> specification = Specification.where(null);
 
         if (criteria != null) {
             if (criteria.getDistinct() != null) {
                 specification = specification.and(distinct(criteria.getDistinct()));
             }
-//            if (criteria.getId() != null) {
-//                specification = specification.and(buildRangeSpecification(criteria.getId(),Book_.id));
-//            }
+            if (criteria.getId() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getId(), Book_.id));
+            }
+            if (criteria.getHeight() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getHeight(), Book_.height));
+            }
             if (criteria.getTitle() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getTitle(), Book_.title));
+            }
+            if (criteria.getPublisher() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getPublisher(), Book_.publisher));
+            }
+            if (criteria.getCreatedDate() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getCreatedDate(), Book_.createdDate));
             }
         }
 

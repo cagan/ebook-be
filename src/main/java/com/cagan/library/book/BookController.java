@@ -50,7 +50,7 @@ public class BookController {
         if (file.isEmpty()) {
             throw new FileNotExceptedException("File can not be empty.");
         }
-        var result = bookService.createBulkBulks(file);
+        var result = bookService.bulkCreateBooks(file);
 
         return ResponseEntity
                 .created(new URI("/api/v1/books/"))

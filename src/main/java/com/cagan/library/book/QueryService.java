@@ -1,7 +1,7 @@
 package com.cagan.library.book;
 
+import com.cagan.library.filter.RangeFilter;
 import com.cagan.library.filter.StringFilter;
-import liquibase.pro.packaged.V;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +35,50 @@ public class QueryService<ENTITY> {
         }
     }
 
-    private Specification<ENTITY> byFieldSpecified(Function<Root<ENTITY>, Expression<String>> metaclassFunction, Boolean specified) {
+    protected <X extends Comparable<? super X>> Specification<ENTITY> buildSpecification(RangeFilter<X> filter, Function<Root<ENTITY>, Expression<X>> metaclassFunction) {
+        if (filter.getEquals() != null) {
+            return this.equalsSpecification(metaclassFunction, filter.getEquals());
+        } else if (filter.getIn() != null) {
+            return this.valueIn(metaclassFunction, filter.getIn());
+        } else {
+            Specification<ENTITY> result = Specification.where(null);
+            if (filter.getSpecified() != null) {
+                result = result.and(this.byFieldSpecified(metaclassFunction, filter.getSpecified()));
+            }
+
+            if (filter.getNotEquals() != null) {
+                result = result.and(this.notEqualsSpecification(metaclassFunction, filter.getNotEquals()));
+            }
+
+            if (filter.getNotIn() != null) {
+                result = result.and(this.valueNotIn(metaclassFunction, filter.getNotIn()));
+            }
+
+            if (filter.getGreaterThan() != null) {
+                result = result.and(this.greaterThan(metaclassFunction, filter.getGreaterThan()));
+            }
+
+            if (filter.getGreaterThanOrEqual() != null) {
+                result = result.and(this.greaterThanOrEqualTo(metaclassFunction, filter.getGreaterThanOrEqual()));
+            }
+
+            if (filter.getLessThan() != null) {
+                result = result.and(this.lessThan(metaclassFunction, filter.getLessThan()));
+            }
+
+            if (filter.getLessThanOrEqual() != null) {
+                result = result.and(this.lessThanOrEqualTo(metaclassFunction, filter.getLessThanOrEqual()));
+            }
+
+            return result;
+        }
+    }
+
+    protected <X extends Comparable<? super X>> Specification<ENTITY> buildRangeSpecification(RangeFilter<X> filter, SingularAttribute<? super ENTITY, X> field) {
+        return this.buildSpecification(filter, (root) -> root.get(field));
+    }
+
+    protected <X> Specification<ENTITY> byFieldSpecified(Function<Root<ENTITY>, Expression<X>> metaclassFunction, Boolean specified) {
         return specified ?
                 (root, query, builder) -> builder.isNotNull(metaclassFunction.apply(root)) :
                 (root, query, builder) -> builder.isNull(metaclassFunction.apply(root));
@@ -71,6 +114,22 @@ public class QueryService<ENTITY> {
 
             return builder.not(in);
         };
+    }
+
+    public <X extends Comparable<? super X>> Specification<ENTITY> greaterThanOrEqualTo(Function<Root<ENTITY>, Expression<X>> metaclassFunction, X value) {
+        return (root, query, builder) -> builder.greaterThanOrEqualTo(metaclassFunction.apply(root), value);
+    }
+
+    public <X extends Comparable<? super X>> Specification<ENTITY> greaterThan(Function<Root<ENTITY>, Expression<X>> metaclassFunction, X value) {
+        return (root, query, builder) -> builder.greaterThan(metaclassFunction.apply(root), value);
+    }
+
+    public <X extends Comparable<? super X>> Specification<ENTITY> lessThanOrEqualTo(Function<Root<ENTITY>, Expression<X>> metaclassFunction, X value) {
+        return (root, query, builder) -> builder.lessThanOrEqualTo(metaclassFunction.apply(root), value);
+    }
+
+    public <X extends Comparable<? super X>>  Specification<ENTITY> lessThan(Function<Root<ENTITY>, Expression<X>> metaclassFunction, X value) {
+        return (root, query, builder) -> builder.lessThan(metaclassFunction.apply(root), value);
     }
 
     protected Specification<ENTITY> likeUpperSpecification(Function<Root<ENTITY>, Expression<String>> metaclassFunction, String value) {

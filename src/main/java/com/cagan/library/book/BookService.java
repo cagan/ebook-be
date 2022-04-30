@@ -26,7 +26,7 @@ public class BookService {
     }
 
     // TODO: Make upload book process concurrent
-    public List<BookView> createBulkBulks(MultipartFile file) throws IOException {
+    public List<BookView> bulkCreateBooks(MultipartFile file) throws IOException {
         List<CSVBookDTO> list = CsvFileUtil.extractToList(
                 CSVBookDTO.class,
                 file.getInputStream(),
