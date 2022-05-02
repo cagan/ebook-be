@@ -1,4 +1,4 @@
-package com.cagan.library.book;
+package com.cagan.library.bookcatalog;
 
 import com.cagan.library.filter.RangeFilter;
 import com.cagan.library.filter.StringFilter;
@@ -144,7 +144,7 @@ public class QueryService<ENTITY> {
         return "%" + txt.toUpperCase() + '%';
     }
 
-    protected Specification<Book> distinct(final boolean distinct) {
+    protected Specification<BookCatalog> distinct(final boolean distinct) {
         return (root, query, criteriaBuilder) -> {
             query.distinct(distinct);
             return null;

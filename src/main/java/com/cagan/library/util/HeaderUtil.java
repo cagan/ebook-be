@@ -19,7 +19,7 @@ public final class HeaderUtil {
         headers.add("X-" + applicationName + "-alert", message);
 
         try {
-            headers.add("X-" + applicationName + "-TOTAL_COUNT", URLEncoder.encode(param, StandardCharsets.UTF_8.toString()));
+            headers.add("X-" + applicationName + "-params", URLEncoder.encode(param, StandardCharsets.UTF_8.toString()));
         } catch (UnsupportedEncodingException var) {
             log.error("UnsupportedEncodingException", var);
         }
@@ -32,6 +32,11 @@ public final class HeaderUtil {
         return createAlert(applicationName, message, param);
     }
 
+    public static HttpHeaders createEntityUpdateAlert(String applicationName, boolean enableTranslation, String entityName, String param) {
+        String message = enableTranslation ? applicationName + "." + entityName + ".updated" : "A " + entityName + " is updated with identifier " + param;
+        return createAlert(applicationName, message, param);
+    }
+
     public static HttpHeaders createFailureAlert(String applicationName, boolean enableTranslation, String entityName, String errorKey, String defaultMessage) {
         log.error("Entity process failed, {} ", defaultMessage);
         String message = enableTranslation ? applicationName + "." + entityName + ".failed" : defaultMessage;
@@ -39,5 +44,10 @@ public final class HeaderUtil {
         headers.add("X-" + applicationName + "-error", message);
         headers.add("X-" + applicationName + "-params", entityName);
         return headers;
+    }
+
+    public static HttpHeaders createEntityDeletionAlert(String applicationName, boolean enableTranslation, String entityName, String param) {
+        String message = enableTranslation ? applicationName + "." + entityName + ".deleted" : "A " + entityName + " is deleted with identifier " + param;
+        return createAlert(applicationName, message, param);
     }
 }

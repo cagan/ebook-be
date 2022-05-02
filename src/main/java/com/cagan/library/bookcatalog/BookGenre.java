@@ -1,4 +1,4 @@
-package com.cagan.library.book;
+package com.cagan.library.bookcatalog;
 
 public enum BookGenre {
     ACTION,

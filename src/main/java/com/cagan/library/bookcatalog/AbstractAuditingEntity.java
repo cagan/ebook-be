@@ -1,4 +1,4 @@
-package com.cagan.library.book;
+package com.cagan.library.bookcatalog;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;

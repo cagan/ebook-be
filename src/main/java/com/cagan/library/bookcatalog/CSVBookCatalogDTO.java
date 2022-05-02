@@ -1,4 +1,4 @@
-package com.cagan.library.book;
+package com.cagan.library.bookcatalog;
 
 import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvToBean;
@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class CSVBookDTO extends CsvToBean<Book> {
+public class CSVBookCatalogDTO extends CsvToBean<BookCatalog> {
     @CsvBindByPosition(position = 0)
     private String title;
 
