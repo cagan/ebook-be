@@ -1,10 +1,8 @@
-package com.cagan.library.book;
+package com.cagan.library.bookcatalog;
 
 import com.opencsv.bean.CsvToBeanFilter;
 
-import java.util.Arrays;
-
-public class BookFileFilter implements CsvToBeanFilter {
+public class BookCatalogFileFilter implements CsvToBeanFilter {
     @Override
     public boolean allowLine(String[] strings) {
 

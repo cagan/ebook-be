@@ -1,4 +1,4 @@
-package com.cagan.library.book;
+package com.cagan.library.bookcatalog;
 
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;

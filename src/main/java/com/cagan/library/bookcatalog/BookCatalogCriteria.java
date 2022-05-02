@@ -1,4 +1,4 @@
-package com.cagan.library.book;
+package com.cagan.library.bookcatalog;
 
 import com.cagan.library.filter.InstantFilter;
 import com.cagan.library.filter.IntegerFilter;
@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Data
-public class BookCriteria implements Serializable {
+public class BookCatalogCriteria implements Serializable {
     private static final long serialVersionID = 1L;
     private LongFilter id;
     private StringFilter title;
@@ -53,7 +53,7 @@ public class BookCriteria implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final BookCriteria that = (BookCriteria) o;
+        final BookCatalogCriteria that = (BookCatalogCriteria) o;
         return (
                 Objects.equals(id, that.id) &&
                         Objects.equals(title, that.title) &&

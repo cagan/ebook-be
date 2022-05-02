@@ -1,4 +1,4 @@
-package com.cagan.library.book;
+package com.cagan.library.bookcatalog;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,23 +12,23 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "books")
+@Table(name = "book_catalog")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 //@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Book extends AbstractAuditingEntity implements Serializable {
-
+public class BookCatalog extends AbstractAuditingEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private Long id;
 
-    @Column(name = "title", unique = true, nullable = false)
+    @Column(name = "title", nullable = false, unique = true, updatable = true)
     private String title;
 
     @Column(name = "author", length = 50)
