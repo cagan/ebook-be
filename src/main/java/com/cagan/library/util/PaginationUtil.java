@@ -10,7 +10,6 @@ import java.text.MessageFormat;
 
 @UtilityClass
 public class PaginationUtil {
-    private static final String HEADER_X_TOTAL_COUNT = "X-Total-Count";
     private static final String HEADER_LINK_FORMAT = "<{0}>; rel=\"{1}\"";
 
     public static <T> HttpHeaders generatePaginationHttpHeaders(UriComponentsBuilder uriBuilder, Page<T> page) {
@@ -34,7 +33,7 @@ public class PaginationUtil {
     }
 
     private static String prepareLink(UriComponentsBuilder uriBuilder, int pageNumber, int pageSize, String relType) {
-        return MessageFormat.format("<{0}>; rel=\"{1}\"", preparePageUri(uriBuilder, pageNumber, pageSize), relType);
+        return MessageFormat.format(HEADER_LINK_FORMAT, preparePageUri(uriBuilder, pageNumber, pageSize), relType);
     }
 
     private static String preparePageUri(UriComponentsBuilder uriBuilder, int pageNumber, int pageSize) {
