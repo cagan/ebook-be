@@ -19,7 +19,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "user")
-//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Getter
 @Setter
 public class User extends AbstractAuditingEntity implements Serializable {
@@ -89,7 +89,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
             joinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = { @JoinColumn(name = "authority_name", referencedColumnName = "name")}
     )
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
 

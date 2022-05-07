@@ -7,11 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     String USERS_BY_EMAIL_CACHE = "usersByEmail";
+    String USERS_BY_LOGIN_CACHE = "usersByLogin";
 
     @EntityGraph(attributePaths = "authorities")
     @Cacheable(cacheNames = USERS_BY_EMAIL_CACHE)
@@ -28,6 +31,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByActivationKey(String activationKey);
 
+
+    List<User> findAllByActivatedIsFalseAndActivationKeyIsNotNullAndCreatedDateBefore(Instant dateTime);
+
+    @Query("select u from User u where u.activated = false and u.activationKey is null and u.createdDate < :instant")
+    List<User> findAllNonActivatedUsers(Instant instant);
 
     Optional<User> findByEmailOrLogin(String email, String login);
 

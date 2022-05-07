@@ -1,6 +1,5 @@
 package com.cagan.library.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +15,6 @@ import javax.persistence.MappedSuperclass;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -29,7 +27,7 @@ public class AbstractAuditingEntity implements Serializable {
     @CreatedBy
     @Column(name = "created_by", nullable = false, length = 50, updatable = false)
     @JsonIgnore
-    private String createdBy = "system";
+    private String createdBy;
 
     @CreatedDate
     @Column(name = "created_date", updatable = false)
@@ -40,7 +38,7 @@ public class AbstractAuditingEntity implements Serializable {
     @LastModifiedBy
     @Column(name = "last_modified_by", length = 50)
     @JsonIgnore
-    private String lastModifiedBy = "system";
+    private String lastModifiedBy;
 
     @LastModifiedDate
     @Column(name = "last_modified_date")
