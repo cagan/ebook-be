@@ -9,14 +9,20 @@ import com.cagan.library.util.RandomUtil;
 import com.cagan.library.web.errors.EmailAlreadyUsedException;
 import com.cagan.library.web.errors.UsernameAlreadyUsedException;
 import com.cagan.library.service.dto.vm.AdminUserDTO;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.cache.CacheManager;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,17 +30,21 @@ import java.util.Set;
 @Transactional
 public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
-    //    private final CacheManager cacheManager;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;
+    private final CacheManager cacheManager;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository) {
+    public UserService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            AuthorityRepository authorityRepository,
+            CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
-//        this.cacheManager = cacheManager;
+        this.cacheManager = cacheManager;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -44,7 +54,7 @@ public class UserService {
                 .map(user -> {
                     user.setActivated(true);
                     user.setActivationKey(null);
-                    // this.clearUserCache(user);
+                     this.clearUserCaches(user);
                     log.debug("Activated user: {}", user);
                     return user;
                 });
@@ -83,8 +93,7 @@ public class UserService {
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
         userRepository.save(newUser);
-        // TODO: Handle clear user cache
-        // this.clearUserCache(newUser);
+        this.clearUserCaches(newUser);
         log.debug("Created Information for user: {}", newUser);
         return newUser;
     }
@@ -95,16 +104,31 @@ public class UserService {
         }
         userRepository.delete(existingUser);
         userRepository.flush();
-//        this.clearUserCaches(existingUser);
+        this.clearUserCaches(existingUser);
         return true;
     }
 
+    /**
+     * Not activated users should be automatically deleted after 3 days.
+     *
+     * <p>This is scheduled to get fired <b>everyday, at 01:00 (am)</b>.</p>
+     */
+    @Scheduled(cron = "0 0 1 * * ?")
+    public void removeNotActivatedUser() {
+        userRepository
+                .findAllNonActivatedUsers(Instant.now().minus(3, ChronoUnit.DAYS))
+                .forEach(user -> {
+                    log.debug("Deleting not activated user {}", user.getLogin());
+                    userRepository.delete(user);
+                    this.clearUserCaches(user);
+                });
+    }
+
     // TODO: Enable caching
-//    private void clearUserCaches(@NotNull User user) {
-//        Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE), "cache is null")
-//                .evict(user.getLogin());
-//        if (user.getEmail() != null) {
-//
-//        }
-//    }
+    private void clearUserCaches(User user) {
+        Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).remove(user.getLogin());
+        if (user.getEmail() != null) {
+            Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).remove(user.getEmail());
+        }
+    }
 }

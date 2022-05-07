@@ -15,6 +15,7 @@ import org.springframework.web.cors.CorsConfiguration;
 public class EBookProperties {
     private final Security security = new Security();
     private final CorsConfiguration cors = new CorsConfiguration();
+    private final Cache cache = new Cache();
 
     @Getter
     @Setter
@@ -46,6 +47,38 @@ public class EBookProperties {
                     this.tokenValidityInSeconds = 1800L;
                     this.tokenValidityInSecondsForRememberMe = 2592000L;
                 }
+            }
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class Cache {
+        private final Redis redis = new Redis();
+
+        public Redis getRedis() {
+            return this.redis;
+        }
+
+        @Getter
+        @Setter
+        public static class Redis {
+            private String[] server;
+            private int expiration;
+            private boolean cluster;
+            private int connectionPoolSize;
+            private int connectionMinimumIdleSize;
+            private int subscriptionConnectionPoolSize;
+            private int subscriptionConnectionMinimumIdleSize;
+
+            public Redis() {
+                this.server = new String[]{"redis://localhost:6379"};;
+                this.expiration = 300;
+                this.cluster = false;
+                this.connectionPoolSize = 64;
+                this.connectionMinimumIdleSize = 24;
+                this.subscriptionConnectionPoolSize = 50;
+                this.subscriptionConnectionMinimumIdleSize = 1;
             }
         }
     }

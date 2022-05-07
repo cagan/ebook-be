@@ -7,6 +7,7 @@ import com.cagan.library.service.criteria.BookCatalogCriteria;
 import com.cagan.library.service.dto.view.BookCatalogView;
 import com.cagan.library.service.mapper.BookCatalogViewMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
+//@Transactional(readOnly = true)
+@Transactional
 public class BookCatalogQueryService extends QueryService<BookCatalog> {
     private final BookCatalogRepository bookCatalogRepository;
     private final BookCatalogViewMapper bookViewMapper;
@@ -64,7 +66,7 @@ public class BookCatalogQueryService extends QueryService<BookCatalog> {
         return specification;
     }
 
-    @Transactional(readOnly = true)
+//    @Transactional(readOnly = true)
     public long countByCriteria(BookCatalogCriteria criteria) {
         final Specification<BookCatalog> specification = createSpecification(criteria);
         return bookCatalogRepository.count(specification);

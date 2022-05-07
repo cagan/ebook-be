@@ -1,5 +1,6 @@
 package com.cagan.library.web.rest;
 
+import com.cagan.library.security.AuthoritiesConstants;
 import com.cagan.library.service.BookCatalogQueryService;
 import com.cagan.library.service.dto.request.BookCatalogRequest;
 import com.cagan.library.service.BookCatalogService;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -54,9 +56,9 @@ public class BookCatalogController {
     }
 
     // TODO: cagan - Only admin can add books
-    // TODO: cagan - Append added book count to the header
 
     /**
+     *
      * {@code GET  /book-catalog/upload} : upload book catalog with csv file.
      *
      * @param file the csv file to upload on the system which contains book list.
@@ -65,6 +67,7 @@ public class BookCatalogController {
      * @throws URISyntaxException
      */
     @PostMapping("/upload")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<List<BookCatalogView>> uploadBookCatalogs(@RequestParam("file") MultipartFile file) throws IOException, URISyntaxException {
         if (file.isEmpty()) {
             throw new FileNotExceptedException("File can not be empty.");
@@ -85,6 +88,7 @@ public class BookCatalogController {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping(consumes = {"multipart/form-data", "application/json"}, produces = {"application/json"})
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<BookCatalogView> createBookCatalog(@Valid @RequestBody BookCatalogRequest request) throws URISyntaxException {
         logger.debug("REST request to save Book Catalog: {}", request);
         bookCatalogRepository.findByAuthorAndTitle(request.getAuthor(), request.getTitle())
@@ -110,6 +114,7 @@ public class BookCatalogController {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<BookCatalogView> updateBookCatalog(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody BookCatalogRequest request) {
         logger.debug("REST request to update Event: {}, {}", id, request);
         if (request.getId() == null) {
@@ -142,6 +147,7 @@ public class BookCatalogController {
      * or with status {@code 500 (Internal Server Error)} if the bookCategory couldn't be updated.
      */
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<BookCatalogView> partialUpdateBookCategory(@PathVariable(value = "id", required = false) final Long id, @RequestBody BookCatalogRequest request) {
         logger.debug("REST request to partial update book category: {}, {}", id, request);
         if (request.getId() == null) {
@@ -192,7 +198,7 @@ public class BookCatalogController {
     // TODO: cagan - try sorting
 
     /**
-     * {@code GET  /books/search} : get all the books.
+     * {@code GET  /book-catalog} : get all the books.
      *
      * @param criteria the criteria which the requested entities should match.
      * @param pageable pageable object.
@@ -213,6 +219,7 @@ public class BookCatalogController {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Void> deleteBookCatalog(@PathVariable("id") Long id) {
         logger.debug("REST request to delete book catalog: {} ", id);
         bookCatalogService.delete(id);
