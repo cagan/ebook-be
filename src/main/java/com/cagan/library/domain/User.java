@@ -93,6 +93,17 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
 
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "user_books",
+            joinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = { @JoinColumn(name = "book_id", referencedColumnName = "id")}
+    )
+    @BatchSize(size = 20)
+    private Set<Book> books = new HashSet<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

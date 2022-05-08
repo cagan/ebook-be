@@ -24,6 +24,11 @@ public class SecurityUtils {
         return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
     }
 
+    public static Authentication getCurrentUser() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        return securityContext.getAuthentication();
+    }
+
     private static String extractPrincipal(Authentication authentication) {
         if (authentication == null) {
             return null;
@@ -82,7 +87,7 @@ public class SecurityUtils {
      * @param authority the authority to check.
      * @return true if the current user has the authority, false otherwise
      */
-    public static boolean hasCurrentUserThisAuthority(String authority) {
+    public static boolean hasCurrentUserHasThisAuthority(String authority) {
         return hasCurrentUserAnyOfAuthorities(authority);
     }
 
