@@ -10,6 +10,7 @@ import org.hibernate.annotations.Cache;
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "book_catalog")
@@ -42,4 +43,7 @@ public class BookCatalog extends AbstractAuditingEntity implements Serializable 
 
     @Column(name = "publisher")
     private String publisher;
+
+    @OneToMany(mappedBy = "bookCatalog", targetEntity = BookInSystem.class)
+    private List<BookInSystem> booksInSystem;
 }
