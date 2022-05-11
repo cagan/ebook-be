@@ -1,8 +1,10 @@
 package com.cagan.library.service;
 
+import com.amazonaws.services.s3.model.S3Object;
 import com.cagan.library.domain.Book;
 import com.cagan.library.domain.BookCatalog;
 import com.cagan.library.domain.BookInSystem;
+import com.cagan.library.integration.s3.BookObject;
 import com.cagan.library.repository.BookInSystemRepository;
 import com.cagan.library.repository.BookRepository;
 import com.cagan.library.service.dto.request.BookItemRequest;
@@ -16,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
@@ -63,6 +64,18 @@ public class BookService {
 
     // TODO: FORCE UPLOAD
     public void forceUploadBook(BookItemRequest bookItem) {
-       // force upload
+        // force upload
+    }
+
+    public BookObject downloadBook(String locator) {
+        ObjectLocator objectLocator = ObjectLocatorUtils.getObjectLocator(locator);
+        S3Object s3Object = s3ClientService.getObject(objectLocator);
+
+        return new BookObject(s3Object.getObjectContent(), s3Object.getObjectMetadata().getContentLength());
+    }
+
+    public void deleteBook(String locator) {
+        ObjectLocator objectLocator = ObjectLocatorUtils.getObjectLocator(locator);
+        s3ClientService.deleteObject(objectLocator);
     }
 }

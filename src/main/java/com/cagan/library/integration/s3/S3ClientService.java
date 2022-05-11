@@ -105,13 +105,8 @@ public class S3ClientService {
         return getConnection().getObject(objectLocator.getBucketName(), objectLocator.getObjectName());
     }
 
-    public void deleteBucket(String bucketName) {
-        try {
-            getConnection().deleteBucket(bucketName);
-            log.info("BUCKET DELETED: {}", bucketName);
-        } catch (Exception exception) {
-            log.error("[S3_CLIENT_CREATE_BUCKET] [BUCKET_NAME: {}] ERROR CREATING BUCKET: {}", bucketName, exception.getMessage());
-            throw new BookBucketException(exception.getMessage());
-        }
+    public void deleteObject(ObjectLocator locator) {
+        log.info("Deleting the object: [BUCKET_NAME: {}] [OBJECT_NAME: {}]", locator.getBucketName(), locator.getObjectName());
+        getConnection().deleteObject(locator.getBucketName(), locator.getBucketName());
     }
 }
