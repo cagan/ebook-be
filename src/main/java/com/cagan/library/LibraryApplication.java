@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.zalando.problem.jackson.ProblemModule;
 import org.zalando.problem.violations.ConstraintViolationProblemModule;
 
@@ -26,6 +27,7 @@ import java.util.Optional;
 
 @SpringBootApplication
 @EnableConfigurationProperties({ApplicationProperties.class, EBookProperties.class})
+@EnableAsync
 public class LibraryApplication {
 
     private final Environment env;

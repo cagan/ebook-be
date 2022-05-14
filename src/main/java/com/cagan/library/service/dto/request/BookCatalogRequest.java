@@ -1,5 +1,6 @@
 package com.cagan.library.service.dto.request;
 
+import com.cagan.library.domain.ProductCategory;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -44,4 +45,7 @@ public class BookCatalogRequest implements Serializable {
     @NotBlank
     @Size(max = 50)
     private String publisher;
+
+    @JsonProperty("product_category")
+    private ProductCategory productCategory;
 }

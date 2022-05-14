@@ -1,7 +1,12 @@
 package com.cagan.library.security;
 
+import com.cagan.library.domain.User;
+import com.cagan.library.repository.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,7 +18,6 @@ import java.util.stream.Stream;
 
 @UtilityClass
 public class SecurityUtils {
-
     /**
      * Get the login of the current user.
      *
@@ -22,11 +26,6 @@ public class SecurityUtils {
     public static Optional<String> getCurrentUserLogin() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
-    }
-
-    public static Authentication getCurrentUser() {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        return securityContext.getAuthentication();
     }
 
     private static String extractPrincipal(Authentication authentication) {

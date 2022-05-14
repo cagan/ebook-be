@@ -119,7 +119,7 @@ public class BookController {
     }
 
     @GetMapping("/is-system/{book_catalog_id}")
-    public Map<String, Boolean> isBookInTheSystem(@PathVariable("book_catalog_id") long bookCatalogId) {
+    public Map<String, Boolean> isBookInTheSystem(@PathVariable("book_catalog_id") long bookCatalogId) throws InterruptedException {
         Map<String, Boolean> responseMap = new HashMap<>();
         boolean exists = bookService.isBookInSystem(bookCatalogId);
         responseMap.put("in_the_system", exists);
