@@ -1,10 +1,14 @@
 package com.cagan.library.service.dto.view;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 @Data
+@AllArgsConstructor
 public class CartView {
-    private Long id;
-    private BookCatalogView bookCatalog;
-    private Integer quantity;
+    private List<CartItemView> cartItems;
+    private BigDecimal totalPrice;
 }
