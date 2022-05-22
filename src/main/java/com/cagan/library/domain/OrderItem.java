@@ -14,7 +14,6 @@ import java.util.Objects;
 @Table(name = "order_items")
 @Getter
 @Setter
-@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

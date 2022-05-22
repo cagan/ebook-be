@@ -11,6 +11,7 @@ import com.cagan.library.service.BookService;
 import com.cagan.library.service.CartService;
 import com.cagan.library.service.dto.request.CartUpdateRequest;
 import com.cagan.library.service.dto.view.CartItemView;
+import com.cagan.library.service.dto.view.CartView;
 import com.cagan.library.service.dto.view.MessageResponse;
 import com.cagan.library.web.errors.BadRequestAlertException;
 import lombok.AllArgsConstructor;
@@ -52,12 +53,12 @@ public class CartController {
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<CartItemView>> getCartItems() {
+    public ResponseEntity<CartView> getCartItems() {
         User user = SecurityUtils.getCurrentUserLogin()
                 .flatMap(userRepository::findOneByLogin)
                 .orElseThrow(() -> new BadRequestAlertException("Bad request", "User", "USER_NOT_FOUND_WITH_LOGIN"));
 
-        return ResponseEntity.ok(cartService.listCartItems(user));
+        return ResponseEntity.ok(cartService.getCartView(user));
     }
 
     @PutMapping("/update/{cartItemId}")

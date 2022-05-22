@@ -13,7 +13,6 @@ public interface BookInSystemRepository extends JpaRepository<BookInSystem, Long
 
     Optional<BookInSystem> findByBookCatalogIdAndIsAvailable(long bookCatalogId, boolean isAvailable);
 
-
     @Query("select bs from BookInSystem bs where bs.bookCatalog.id = :bookCatalogId and bs.isAvailable = true and bs.book.id is not null")
     Optional<BookInSystem> getAvailableBooks(long bookCatalogId);
 }

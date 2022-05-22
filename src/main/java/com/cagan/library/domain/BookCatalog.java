@@ -1,5 +1,6 @@
 package com.cagan.library.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -69,5 +70,19 @@ public class BookCatalog extends AbstractAuditingEntity implements Serializable 
         if (productCategory == null) {
             productCategory = ProductCategory.BOOK;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "BookCatalog{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", genre='" + genre + '\'' +
+                ", height=" + height +
+                ", publisher='" + publisher + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", price=" + price +
+                '}';
     }
 }

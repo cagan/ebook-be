@@ -11,7 +11,6 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-@ToString
 @Builder
 @AllArgsConstructor
 public class Cart extends AbstractAuditingEntity implements Serializable {
@@ -46,5 +45,15 @@ public class Cart extends AbstractAuditingEntity implements Serializable {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "id=" + id +
+                ", bookCatalog=" + bookCatalog +
+                ", user=" + user +
+                ", quantity=" + quantity +
+                '}';
     }
 }

@@ -1,31 +1,28 @@
 package com.cagan.library.service;
 
+import com.cagan.library.domain.Book;
 import com.cagan.library.domain.Order;
 import com.cagan.library.domain.OrderItem;
 import com.cagan.library.domain.User;
+import com.cagan.library.integration.stripe.CardPaymentObject;
 import com.cagan.library.integration.stripe.StripePaymentService;
-import com.cagan.library.repository.OrderItemRepository;
-import com.cagan.library.repository.OrderRepository;
+import com.cagan.library.repository.*;
 import com.cagan.library.service.dto.CheckoutItemDto;
+import com.cagan.library.service.dto.request.paymentintent.InitialPaymentIntentRequest;
 import com.cagan.library.service.dto.view.CartItemView;
 import com.cagan.library.service.dto.view.CartView;
-import com.stripe.Stripe;
+import com.cagan.library.web.errors.BadRequestAlertException;
+import com.cagan.library.web.errors.OrderAlreadyCompleted;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Card;
-import com.stripe.model.LineItem;
-import com.stripe.model.PaymentIntent;
-import com.stripe.model.PaymentMethod;
+import com.stripe.model.*;
 import com.stripe.model.checkout.Session;
-import com.stripe.param.checkout.SessionCreateParams;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -33,55 +30,108 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService {
     private static final Logger log = LoggerFactory.getLogger(OrderService.class);
+
     private final CartService cartService;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
-
     private final StripePaymentService paymentService;
-
-    @Value("${stripe.secret_key}")
-    private String apiKey;
+    private final BookRepository bookRepository;
+    private final UserRepository userRepository;
 
     public Session createCheckoutSession(List<CheckoutItemDto> checkoutItemDtoList) throws StripeException {
         return paymentService.createCheckoutSession(checkoutItemDtoList);
     }
 
-//    public void completePayment(String sessionId) throws StripeException {
-//        Card card = new Card();
-//        card.setExpYear(2025L);
-//        card.setExpMonth(11L);
-//        card.setCurrency("USD");
-//        card.set
-//
-//
-//        PaymentMethod paymentMethod = new PaymentMethod();
-//        paymentMethod.setCard();
-//
-//        PaymentIntent paymentIntent = new PaymentIntent();
-//        paymentIntent.setPaymentMethodObject();
-//
-//        Session.retrieve(sessionId)
-//                .setPaymentIntentObject();
-//    }
+    public String createNewOrder(User user, InitialPaymentIntentRequest paymentIntentObject) throws StripeException {
+        Order order = new Order();
+        order.setUser(user);
+        order.setOrderCompleted(false);
 
-    private SessionCreateParams.LineItem createSessionLineItem(CheckoutItemDto checkoutItemDto) {
-        return SessionCreateParams.LineItem
-                .builder()
-                .setPriceData(createPriceData(checkoutItemDto))
-                .setQuantity(Long.parseLong(String.valueOf(checkoutItemDto.getQuantity())))
-                .build();
+        BigDecimal totalPrice = cartService.getCartView(user).getTotalPrice();
+        order.setTotalPrice(totalPrice);
+
+        PaymentIntent paymentIntent = paymentService.createInitialPaymentIntent(paymentIntentObject, totalPrice.longValue() * 1000);
+
+        order.setPaymentIntentId(paymentIntent.getId());
+
+        orderRepository.save(order);
+
+        return paymentIntent.getId();
     }
 
-    private SessionCreateParams.LineItem.PriceData createPriceData(CheckoutItemDto checkoutItemDto) {
-        return SessionCreateParams.LineItem.PriceData.builder()
-                .setCurrency("usd")
-                .setUnitAmount((long) (checkoutItemDto.getPrice() * 100))
-                .setProductData(
-                        SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                .setName(checkoutItemDto.getProductName())
-                                .build()
-                )
-                .build();
+    public String updateOrder(Order order, InitialPaymentIntentRequest paymentIntentRequest) throws StripeException {
+        BigDecimal totalPrice = cartService.getCartView(order.getUser()).getTotalPrice();
+        order.setTotalPrice(totalPrice);
+        PaymentIntent paymentIntent = paymentService.updateAmountToPaymentIntent(order.getPaymentIntentId(), totalPrice.longValue() * 1000);
+        orderRepository.save(order);
+
+        return paymentIntent.getId();
+    }
+
+    public String updateTotalPrice(User user, Order order) throws StripeException {
+        if (!order.getUser().equals(user)) {
+            throw new BadRequestAlertException("Order is not belongs to that user", "Order", "NOT_BELONG_ORDER");
+        }
+
+        if (order.isOrderCompleted()) {
+            throw new OrderAlreadyCompleted();
+        }
+
+        BigDecimal totalPrice = cartService.getCartView(user).getTotalPrice();
+        order.setTotalPrice(totalPrice);
+
+        orderRepository.save(order);
+        return paymentService.updateAmountToPaymentIntent(order.getPaymentIntentId(), totalPrice.longValue()).getId();
+    }
+
+    public String addCardPaymentMethod(User user, Order order, CardPaymentObject cardPaymentObject) throws StripeException {
+        if (!order.getUser().equals(user)) {
+            throw new BadRequestAlertException("Order is not belongs to that user", "Order", "NOT_BELONG_ORDER");
+        }
+
+        if (order.isOrderCompleted()) {
+            throw new OrderAlreadyCompleted();
+        }
+
+        PaymentMethod paymentMethod = paymentService.createCardPaymentMethod(cardPaymentObject);
+        PaymentIntent paymentIntent = paymentService.addPaymentMethodToPaymentIntent(order.getPaymentIntentId(), paymentMethod.getId());
+        return paymentIntent.getId();
+    }
+
+    public Order completeOrder(User user, Order order) throws StripeException {
+        CartView cartView = cartService.getCartView(user);
+        List<CartItemView> cartItemViewList = cartView.getCartItems();
+
+        for (CartItemView cartItemView : cartItemViewList) {
+            OrderItem orderItem = OrderItem.builder()
+                    .order(order)
+                    .bookCatalog(cartItemView.getBookCatalog())
+                    .price(cartItemView.getBookCatalog().getPrice())
+                    .quantity(cartItemView.getQuantity())
+                    .build();
+
+            orderItemRepository.save(orderItem);
+            log.info("[ORDER_ITEM: {}] created for [ORDER: {}]", orderItem, order);
+
+            // TODO: insert purchased books into the user_books table.
+//            Book purchasedBook = bookRepository.findByBookCatalogId(cartItemView.getBookCatalog().getId())
+//                    .map(book -> {
+//                        user.getBooks().add(book);
+//                        return book;
+//                    }).orElseThrow(() -> new BadRequestAlertException("Book catalog not found", "BookCatalog", "notfound"));
+
+//            userRepository.save(user);
+//            log.info("[BOOK: {}] added to the [USER: {}]'s purchased list", purchasedBook, user);
+        }
+
+        order.setTotalPrice(cartService.calculateTotalPrice(cartItemViewList));
+
+        cartService.deleteUserCartItems(user);
+        order.setOrderCompleted(true);
+
+        paymentService.confirmPaymentIntent(order.getPaymentIntentId());
+
+        return order;
     }
 
     public Order placeOrder(User user, String sessionId) {
@@ -112,5 +162,4 @@ public class OrderService {
         cartService.deleteUserCartItems(user);
         return order;
     }
-
 }

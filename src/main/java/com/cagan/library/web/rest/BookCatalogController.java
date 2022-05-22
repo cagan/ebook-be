@@ -55,8 +55,6 @@ public class BookCatalogController {
         this.bookCatalogRepository = bookCatalogRepository;
     }
 
-    // TODO: cagan - Only admin can add books
-
     /**
      *
      * {@code GET  /book-catalog/upload} : upload book catalog with csv file.

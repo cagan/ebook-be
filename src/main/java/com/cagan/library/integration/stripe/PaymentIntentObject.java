@@ -10,12 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaymentIntentObject {
-    private String paymentMethodId;
     private String currency;
     private long amount;
-    private boolean confirm;
     private String description;
     private PaymentMethodType paymentMethodType;
+    private String paymentMethodId;
 
     public enum PaymentMethodType {
         card

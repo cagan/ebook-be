@@ -8,4 +8,5 @@ public class CardPaymentObject {
     private Long expYear;
     private Long expMonth;
     private String cvc;
+    private Long orderId;
 }

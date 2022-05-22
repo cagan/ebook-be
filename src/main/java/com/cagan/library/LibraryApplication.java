@@ -8,8 +8,11 @@ import com.cagan.library.integration.stripe.PaymentIntentObject;
 import com.cagan.library.integration.stripe.StripePaymentService;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Order;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.PaymentMethod;
+import com.stripe.param.OrderCreateParams;
+import com.stripe.param.PaymentMethodCreateParams;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.jni.Library;
 import org.slf4j.Logger;
@@ -116,12 +119,11 @@ public class LibraryApplication {
         );
     }
 
-    @Value("${stripe.secret_key}")
-    private String apiKey;
-
-    @Bean
-    public CommandLineRunner run() {
-        return args -> {
+//    @Value("${stripe.secret_key}")
+//    private String apiKey;
+//    @Bean
+//    public CommandLineRunner run() {
+//        return args -> {
 //            Stripe.apiKey = apiKey;
 //
 //            Map<String, Object> card = new HashMap<>();
@@ -159,33 +161,33 @@ public class LibraryApplication {
 //                    .getStatus();
 //
 //            log.info("------PAYMENT INTENT STATUS: {}------", status);
-
-            CardPaymentObject cpo = new CardPaymentObject();
-            cpo.setNumber("4242424242424242");
-            cpo.setExpMonth(5L);
-            cpo.setExpYear(2023L);
-            cpo.setCvc("314");
-
-            PaymentMethod paymentMethod = paymentService.createCardPaymentMethod(cpo);
-
-
-            PaymentIntentObject pio = new PaymentIntentObject();
-            pio.setPaymentMethodId(paymentMethod.getId());
-            pio.setPaymentMethodType(PaymentIntentObject.PaymentMethodType.card);
-            pio.setAmount(50L);
-            pio.setDescription("New attempt");
-            pio.setCurrency("usd");
-            pio.setConfirm(false);
-
-            PaymentIntent paymentIntent = paymentService.createPaymentIntent(pio);
-            log.info("PAYMENT INTENT STATUS: {}", paymentIntent.getStatus());
-
-            try {
-                PaymentIntent paymentIntent1 = paymentService.confirmPaymentIntent(paymentIntent.getId());
-                log.info("PAYMENT INTENT STATUS: {}", paymentIntent1.getStatus());
-            } catch (StripeException exception) {
-                System.out.println("INVALID CARD: " + exception.getMessage());
-            }
-        };
-    }
+//
+//            CardPaymentObject cpo = new CardPaymentObject();
+//            cpo.setNumber("4242424242424242");
+//            cpo.setExpMonth(5L);
+//            cpo.setExpYear(2023L);
+//            cpo.setCvc("314");
+//
+//            PaymentMethod paymentMethod = paymentService.createCardPaymentMethod(cpo);
+//
+//
+//            PaymentIntentObject pio = new PaymentIntentObject();
+//            pio.setPaymentMethodId(paymentMethod.getId());
+//            pio.setPaymentMethodType(PaymentIntentObject.PaymentMethodType.card);
+//            pio.setAmount(50L);
+//            pio.setDescription("New attempt");
+//            pio.setCurrency("usd");
+//            pio.setConfirm(false);
+//
+//            PaymentIntent paymentIntent = paymentService.createPaymentIntent(pio);
+//            log.info("PAYMENT INTENT STATUS: {}", paymentIntent.getStatus());
+//
+//            try {
+//                PaymentIntent paymentIntent1 = paymentService.confirmPaymentIntent(paymentIntent.getId());
+//                log.info("PAYMENT INTENT STATUS: {}", paymentIntent1.getStatus());
+//            } catch (StripeException exception) {
+//                System.out.println("INVALID CARD: " + exception.getMessage());
+//            }
+//        };
+//    }
 }

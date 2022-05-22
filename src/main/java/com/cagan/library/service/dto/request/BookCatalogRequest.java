@@ -39,7 +39,7 @@ public class BookCatalogRequest implements Serializable {
 
     @NotNull
     @Positive
-    @Max(50)
+    @Min(0)
     private Integer height;
 
     @NotBlank

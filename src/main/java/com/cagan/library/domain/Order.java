@@ -30,6 +30,12 @@ public class Order extends AbstractAuditingEntity implements Serializable {
     @Column(name = "session_id")
     private String sessionId;
 
+    @Column(name = "payment_intent_id")
+    private String paymentIntentId;
+
+    @Column(name = "order_completed")
+    private boolean orderCompleted = true;
+
     @Column(name = "total_price")
     private BigDecimal totalPrice;
 

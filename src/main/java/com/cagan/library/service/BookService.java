@@ -49,6 +49,7 @@ public class BookService {
         book.setObjectLocator(locator);
         bookRepository.save(book);
         log.info("New book created to the table: [BOOK: {}]", book);
+//        book.setBookCatalog(bookCatalog);
 
         var bookInSystem = new BookInSystem();
         bookInSystem.setIsAvailable(true);
