@@ -9,8 +9,8 @@ import com.cagan.library.repository.UserRepository;
 import com.cagan.library.security.SecurityUtils;
 import com.cagan.library.service.BookService;
 import com.cagan.library.service.CartService;
-import com.cagan.library.service.dto.request.CartUpdateRequest;
-import com.cagan.library.service.dto.view.CartItemView;
+import com.cagan.library.service.dto.request.AddToCartRequest;
+import com.cagan.library.service.dto.request.UpdateCartItemRequest;
 import com.cagan.library.service.dto.view.CartView;
 import com.cagan.library.service.dto.view.MessageResponse;
 import com.cagan.library.web.errors.BadRequestAlertException;
@@ -20,7 +20,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/cart")
@@ -34,7 +33,7 @@ public class CartController {
 
     @PostMapping("/add")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<MessageResponse> addToCart(@RequestBody @Valid CartUpdateRequest request) {
+    public ResponseEntity<MessageResponse> addToCart(@RequestBody @Valid AddToCartRequest request) {
         User user = SecurityUtils.getCurrentUserLogin()
                 .flatMap(userRepository::findOneByLogin)
                 .orElseThrow(() -> new BadRequestAlertException("Bad request", "User", "USER_NOT_FOUND_WITH_LOGIN"));
@@ -63,7 +62,7 @@ public class CartController {
 
     @PutMapping("/update/{cartItemId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> updateCartItem(@PathVariable("cartItemId") Long cartItemId, @Valid @RequestBody CartUpdateRequest request) {
+    public ResponseEntity<CartView> updateCartItem(@PathVariable("cartItemId") Long cartItemId, @Valid @RequestBody UpdateCartItemRequest request) {
         User user = SecurityUtils.getCurrentUserLogin()
                 .flatMap(userRepository::findOneByLogin)
                 .orElseThrow(() -> new BadRequestAlertException("Bad request", "User", "USER_NOT_FOUND_WITH_LOGIN"));
@@ -76,7 +75,6 @@ public class CartController {
            return ResponseEntity.ok().build();
        }
 
-        cartService.updateCartItem(request, cart);
         return ResponseEntity.ok(cartService.updateCartItem(request, cart));
     }
 

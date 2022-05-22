@@ -3,6 +3,7 @@ package com.cagan.library.service.dto.view;
 import com.cagan.library.domain.BookCatalog;
 import com.cagan.library.domain.BookInSystem;
 import com.cagan.library.domain.Cart;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.time.Instant;
@@ -11,6 +12,7 @@ import java.util.List;
 @Data
 public class CartItemView {
     private long id;
+    @JsonIgnore
     private BookCatalog bookCatalog;
     private Integer quantity;
     private Cart cart;

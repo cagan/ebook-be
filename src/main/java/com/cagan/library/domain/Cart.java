@@ -1,5 +1,6 @@
 package com.cagan.library.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -28,6 +29,7 @@ public class Cart extends AbstractAuditingEntity implements Serializable {
     private BookCatalog bookCatalog;
 
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 

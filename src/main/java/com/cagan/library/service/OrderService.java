@@ -1,9 +1,8 @@
 package com.cagan.library.service;
 
-import com.cagan.library.domain.Book;
+import com.cagan.library.domain.*;
 import com.cagan.library.domain.Order;
 import com.cagan.library.domain.OrderItem;
-import com.cagan.library.domain.User;
 import com.cagan.library.integration.stripe.CardPaymentObject;
 import com.cagan.library.integration.stripe.StripePaymentService;
 import com.cagan.library.repository.*;
@@ -37,6 +36,7 @@ public class OrderService {
     private final StripePaymentService paymentService;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
+    private final BookInSystemRepository bookInSystemRepository;
 
     public Session createCheckoutSession(List<CheckoutItemDto> checkoutItemDtoList) throws StripeException {
         return paymentService.createCheckoutSession(checkoutItemDtoList);
@@ -113,15 +113,15 @@ public class OrderService {
             orderItemRepository.save(orderItem);
             log.info("[ORDER_ITEM: {}] created for [ORDER: {}]", orderItem, order);
 
-            // TODO: insert purchased books into the user_books table.
-//            Book purchasedBook = bookRepository.findByBookCatalogId(cartItemView.getBookCatalog().getId())
-//                    .map(book -> {
-//                        user.getBooks().add(book);
-//                        return book;
-//                    }).orElseThrow(() -> new BadRequestAlertException("Book catalog not found", "BookCatalog", "notfound"));
 
-//            userRepository.save(user);
-//            log.info("[BOOK: {}] added to the [USER: {}]'s purchased list", purchasedBook, user);
+            Book book = bookInSystemRepository.findByBookCatalogIdAndIsAvailable(orderItem.getBookCatalog().getId(), true)
+                    .orElseThrow(() -> new BadRequestAlertException("Available book Not found", "BooksInSystem", "not_found"))
+                    .getBook();
+
+            // TODO: insert purchased books into the user_books table.
+            user.getBooks().add(book);
+            userRepository.save(user);
+            log.info("[BOOK: {}] added to the [USER: {}]'s purchased list", book, user);
         }
 
         order.setTotalPrice(cartService.calculateTotalPrice(cartItemViewList));

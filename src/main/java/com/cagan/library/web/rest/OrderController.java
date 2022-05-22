@@ -123,7 +123,7 @@ public class OrderController {
                     }
                 }).orElseThrow(() -> new BadRequestAlertException("Bad request", "Order", "ORDER_NOT_FOUND_WITH_LOGIN"));
 
-        return ResponseEntity.ok().body(orderService.completeOrder(user, result));
+        return ResponseEntity.ok().body(result);
     }
 
     @PostMapping("/complete")

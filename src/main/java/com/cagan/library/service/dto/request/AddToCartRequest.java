@@ -8,7 +8,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class CartUpdateRequest {
+public class AddToCartRequest {
 
     private Long id;
 
