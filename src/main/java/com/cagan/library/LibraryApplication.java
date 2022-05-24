@@ -8,11 +8,9 @@ import com.cagan.library.integration.stripe.PaymentIntentObject;
 import com.cagan.library.integration.stripe.StripePaymentService;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Order;
-import com.stripe.model.PaymentIntent;
-import com.stripe.model.PaymentMethod;
-import com.stripe.param.OrderCreateParams;
-import com.stripe.param.PaymentMethodCreateParams;
+import com.stripe.model.*;
+import com.stripe.param.*;
+import com.stripe.param.checkout.SessionCreateParams;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.jni.Library;
 import org.slf4j.Logger;
@@ -41,6 +39,7 @@ public class LibraryApplication {
     private static final Logger log = LoggerFactory.getLogger(LibraryApplication.class);
 
     private final StripePaymentService paymentService;
+
     @Autowired
     public LibraryApplication(Environment env, StripePaymentService paymentService) {
         this.env = env;
@@ -119,12 +118,13 @@ public class LibraryApplication {
         );
     }
 
-//    @Value("${stripe.secret_key}")
-//    private String apiKey;
-//    @Bean
-//    public CommandLineRunner run() {
-//        return args -> {
-//            Stripe.apiKey = apiKey;
+    @Value("${stripe.secret_key}")
+    private String apiKey;
+
+    @Bean
+    public CommandLineRunner run() {
+        return args -> {
+            Stripe.apiKey = apiKey;
 //
 //            Map<String, Object> card = new HashMap<>();
 //            card.put("number", "4000000000000002");
@@ -188,6 +188,60 @@ public class LibraryApplication {
 //            } catch (StripeException exception) {
 //                System.out.println("INVALID CARD: " + exception.getMessage());
 //            }
-//        };
-//    }
+//            CustomerCreateParams customerCreateParams = CustomerCreateParams
+//                    .builder()
+//                    .setName("Demo Customer")
+//                    .setEmail("customer@demo.com")
+//                    .setDescription("Demo address for demo customer")
+//                    .build();
+//
+//            Customer customer = Customer.create(customerCreateParams);
+//
+//            log.info("Created [Customer: {}]", customer.getId());
+//
+//            ProductCreateParams productCreateParams = ProductCreateParams
+//                    .builder()
+//                    .setName("IPhone 12")
+//                    .setDescription("Apple IPhone 12")
+//                    .setType(ProductCreateParams.Type.GOOD)
+//                    .setActive(true)
+//                    .build();
+//
+//            Product product = Product.create(productCreateParams);
+//
+//            log.info("Created [Product: {}]", product.getId());
+//
+//            PriceCreateParams priceCreateParams = PriceCreateParams
+//                    .builder()
+//                    .setCurrency("usd")
+//                    .setUnitAmount(3000L)
+//                    .setProduct(product.getId())
+//                    .build();
+//
+//            Price price = Price.create(priceCreateParams);
+//
+//            log.info("Created [Price: {}]", price.getId());
+//
+//            InvoiceItemCreateParams invoiceItemCreateParams = InvoiceItemCreateParams.builder()
+//                    .setCustomer(customer.getId())
+//                    .setPrice(price.getId())
+//                    .build();
+//
+//            InvoiceItem invoiceItem = InvoiceItem.create(invoiceItemCreateParams);
+//            log.info("Created [Invoice Item: {}]", invoiceItem.getId());
+//
+//            InvoiceCreateParams invoiceCreateParams = InvoiceCreateParams.builder()
+//                    .setCustomer(customer.getId())
+//                    .setCollectionMethod(InvoiceCreateParams.CollectionMethod.SEND_INVOICE)
+//                    .setDaysUntilDue(30L)
+//                    .build();
+//
+//            Invoice invoice = Invoice.create(invoiceCreateParams);
+//            log.info("Created [Invoice: {}]", invoice.getId());
+//
+//            InvoiceSendInvoiceParams invoiceSendInvoiceParams = InvoiceSendInvoiceParams.builder().build();
+//            Invoice sentInvoice = invoice.sendInvoice(invoiceSendInvoiceParams);
+//            log.info("Invoice [Invoice: {}] has been sent", invoice.getId());
+        };
+    }
 }

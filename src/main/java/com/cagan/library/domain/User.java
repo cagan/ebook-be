@@ -82,6 +82,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "reset_date")
     private Instant resetDate = null;
 
+    @Column(name = "stripe_customer_id")
+    private String customerId;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(

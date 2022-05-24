@@ -27,4 +27,9 @@ public interface BookCatalogRepository extends JpaRepository<BookCatalog, Long>,
     @Override
     @NotNull
     Page<BookCatalog> findAll(Specification<BookCatalog> spec, @NotNull Pageable pageable);
+
+    Optional<BookCatalog> findByIdAndProductIdNotNull(long bookCatalogId);
+
+    Optional<BookCatalog> findByIdAndPriceIdNotNull(long bookCatalogId);
+
 }

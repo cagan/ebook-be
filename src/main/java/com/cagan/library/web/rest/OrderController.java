@@ -26,10 +26,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
-
 @RestController
-@RequestMapping("/api/v1/order")
+@RequestMapping(value = "/api/v1/order")
 @RequiredArgsConstructor
 public class OrderController {
     private final UserRepository userRepository;
@@ -107,7 +105,7 @@ public class OrderController {
     }
 
     @PostMapping("/complete-payment-intent")
-    public ResponseEntity<Order> completePaymentIntent() throws StripeException {
+    public ResponseEntity<Order> completePaymentIntent() {
         User user = SecurityUtils.getCurrentUserLogin()
                 .flatMap(userRepository::findOneByLogin)
                 .orElseThrow(() -> new BadRequestAlertException("Bad request", "User", "USER_NOT_FOUND_WITH_LOGIN"));

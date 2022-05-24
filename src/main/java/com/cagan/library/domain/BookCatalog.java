@@ -53,6 +53,12 @@ public class BookCatalog extends AbstractAuditingEntity implements Serializable 
     @Column(name = "price")
     private BigDecimal price;
 
+    @Column(name = "stripe_product_id")
+    private String productId;
+
+    @Column(name = "stripe_price_id")
+    private String priceId;
+
     @JsonIgnore
     @Column
     @OneToMany(mappedBy = "bookCatalog", fetch = FetchType.LAZY)
