@@ -44,6 +44,8 @@ public class InvoiceService {
     private final StripeInvoiceService stripeCheckoutService;
     private final CartService cartService;
 
+    // TODO: Apply complete order logic
+    // TODO: Price Conversion?
     public String createNewInvoice(User user, CartView cartView) {
         String customerId = getOrCreateCustomer(user);
 
