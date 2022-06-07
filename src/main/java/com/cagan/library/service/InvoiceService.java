@@ -2,15 +2,16 @@ package com.cagan.library.service;
 
 import com.cagan.library.domain.BookCatalog;
 import com.cagan.library.domain.User;
-import com.cagan.library.integration.stripe.StripeInvoiceService;
+import com.cagan.library.integration.stripe.service.StripeCustomerService;
+import com.cagan.library.integration.stripe.service.StripeInvoiceService;
+import com.cagan.library.integration.stripe.service.StripePriceService;
+import com.cagan.library.integration.stripe.service.StripeProductService;
 import com.cagan.library.repository.BookCatalogRepository;
 import com.cagan.library.repository.UserRepository;
 import com.cagan.library.service.dto.view.CartItemView;
 import com.cagan.library.service.dto.view.CartView;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Invoice;
-import com.stripe.param.InvoiceCreateParams;
-import com.stripe.param.InvoiceSendInvoiceParams;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,8 +42,12 @@ public class InvoiceService {
 
     private final UserRepository userRepository;
     private final BookCatalogRepository bookCatalogRepository;
-    private final StripeInvoiceService stripeCheckoutService;
+    private final StripeInvoiceService stripeInvoiceService;
+    private final StripeCustomerService stripeCustomerService;
+    private final StripeProductService stripeProductService;
+    private final StripePriceService stripePriceService;
     private final CartService cartService;
+    private final OrderService orderService;
 
     // TODO: Apply complete order logic
     // TODO: Price Conversion?
@@ -59,18 +64,20 @@ public class InvoiceService {
         invoiceItemList.forEach((item) -> log.info("[INVOICE ITEM: {} CREATED FOR [USER: {}]]", item, user));
         cartService.deleteUserCartItems(user);
 
-        String hostedInvoiceUrl = stripeCheckoutService.sendInvoice(customerId);
+        orderService.createNewOrder(user);
+
+        Invoice invoice = stripeInvoiceService.createInvoice(customerId);
+        String hostedInvoiceUrl = stripeInvoiceService.sendInvoice(invoice);
         log.info("[HOSTED_INVOICE_URL] CREATED: {}", hostedInvoiceUrl);
         return hostedInvoiceUrl;
     }
-
 
     private String getOrCreateCustomer(User user) {
         return userRepository.findByIdAndCustomerIdNotNull(user.getId())
                 .map(User::getCustomerId)
                 .orElseGet(() -> {
                     try {
-                        String customerId = stripeCheckoutService.createNewCustomer(user);
+                        String customerId = stripeCustomerService.createNewCustomer(user);
                         user.setCustomerId(customerId);
                         userRepository.save(user);
                         log.info("New [CUSTOMER: {}] created for [USER: {}]", customerId, user);
@@ -92,7 +99,7 @@ public class InvoiceService {
                 })
                 .orElseGet(() -> {
                     try {
-                        String productId = stripeCheckoutService.createNewProduct(cartItemView);
+                        String productId = stripeProductService.createNewProduct(cartItemView);
                         BookCatalog bookCatalog = cartItemView.getBookCatalog();
                         bookCatalog.setProductId(productId);
                         bookCatalogRepository.save(bookCatalog);
@@ -116,7 +123,7 @@ public class InvoiceService {
                     return ico;
                 }).orElseGet(() -> {
                     try {
-                        String priceId = stripeCheckoutService.createNewPrice(ico.getBookCatalog().getPrice().longValue(), ico.productId);
+                        String priceId = stripePriceService.createNewPrice(ico.getBookCatalog().getPrice().longValue(), ico.productId);
                         ico.setPriceId(priceId);
                         BookCatalog bookCatalog = ico.getBookCatalog();
                         bookCatalog.setPriceId(priceId);
@@ -130,7 +137,7 @@ public class InvoiceService {
 
     private String createInvoiceItem(InvoiceCreateObject ico, String customerId) {
         try {
-            return stripeCheckoutService.createNewInvoiceItem(ico.getPriceId(), customerId);
+            return stripeInvoiceService.createNewInvoiceItem(ico.getPriceId(), customerId);
         } catch (StripeException e) {
             throw new RuntimeException(e);
         }

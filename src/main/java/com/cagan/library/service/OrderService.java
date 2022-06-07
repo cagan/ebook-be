@@ -4,7 +4,7 @@ import com.cagan.library.domain.*;
 import com.cagan.library.domain.Order;
 import com.cagan.library.domain.OrderItem;
 import com.cagan.library.integration.stripe.CardPaymentObject;
-import com.cagan.library.integration.stripe.StripePaymentService;
+import com.cagan.library.integration.stripe.service.StripePaymentIntentService;
 import com.cagan.library.repository.*;
 import com.cagan.library.service.dto.CheckoutItemDto;
 import com.cagan.library.service.dto.request.paymentintent.InitialPaymentIntentRequest;
@@ -33,7 +33,7 @@ public class OrderService {
     private final CartService cartService;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
-    private final StripePaymentService paymentService;
+    private final StripePaymentIntentService paymentService;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final BookInSystemRepository bookInSystemRepository;
@@ -57,6 +57,20 @@ public class OrderService {
         orderRepository.save(order);
 
         return paymentIntent.getId();
+    }
+
+    public Order createNewOrder(User user) {
+        Order order = new Order();
+        order.setUser(user);
+        order.setOrderCompleted(true);
+
+        CartView cartView = cartService.getCartView(user);
+
+        BigDecimal totalPrice = cartView.getTotalPrice();
+        order.setTotalPrice(totalPrice);
+        addPurchasedOrderItems(user, order, cartView);
+
+        return order;
     }
 
     public String updateOrder(Order order, InitialPaymentIntentRequest paymentIntentRequest) throws StripeException {
@@ -132,6 +146,29 @@ public class OrderService {
         paymentService.confirmPaymentIntent(order.getPaymentIntentId());
 
         return order;
+    }
+
+    public void addPurchasedOrderItems(User user, Order order, CartView cartView) {
+        for (CartItemView cartItemView : cartView.getCartItems()) {
+            OrderItem orderItem = OrderItem.builder()
+                    .order(order)
+                    .bookCatalog(cartItemView.getBookCatalog())
+                    .price(cartItemView.getBookCatalog().getPrice())
+                    .quantity(cartItemView.getQuantity())
+                    .build();
+
+            orderItemRepository.save(orderItem);
+            log.info("[ORDER_ITEM: {}] created for [ORDER: {}]", orderItem, order);
+
+            Book book = bookInSystemRepository.findByBookCatalogIdAndIsAvailable(orderItem.getBookCatalog().getId(), true)
+                    .orElseThrow(() -> new BadRequestAlertException("Available book Not found", "BooksInSystem", "not_found"))
+                    .getBook();
+
+            // TODO: insert purchased books into the user_books table.
+            user.getBooks().add(book);
+            userRepository.save(user);
+            log.info("[BOOK: {}] added to the [USER: {}]'s purchased list", book, user);
+        }
     }
 
     public Order placeOrder(User user, String sessionId) {

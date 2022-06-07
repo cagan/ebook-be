@@ -1,5 +1,11 @@
 package com.cagan.library.security.jwt;
 
+import com.cagan.library.domain.User;
+import com.cagan.library.repository.UserRepository;
+import com.cagan.library.security.AuthUserObject;
+import com.cagan.library.security.SecurityUtils;
+import com.cagan.library.web.errors.BadRequestAlertException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +25,6 @@ public class JwtFilter extends GenericFilterBean {
 
     private final TokenProvider tokenProvider;
 
-    @Autowired
     public JwtFilter(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
     }

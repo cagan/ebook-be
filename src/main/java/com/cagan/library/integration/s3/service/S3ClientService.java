@@ -1,4 +1,4 @@
-package com.cagan.library.integration.s3;
+package com.cagan.library.integration.s3.service;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSCredentialsProvider;
@@ -9,6 +9,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
+import com.cagan.library.integration.s3.ObjectLocator;
 import com.cagan.library.web.errors.BookBucketException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

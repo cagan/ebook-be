@@ -3,16 +3,9 @@ package com.cagan.library;
 import com.cagan.library.config.ApplicationProperties;
 import com.cagan.library.config.EBookProperties;
 import com.cagan.library.config.ProfileConstants;
-import com.cagan.library.integration.stripe.CardPaymentObject;
-import com.cagan.library.integration.stripe.PaymentIntentObject;
-import com.cagan.library.integration.stripe.StripePaymentService;
+import com.cagan.library.integration.stripe.service.StripePaymentIntentService;
 import com.stripe.Stripe;
-import com.stripe.exception.StripeException;
-import com.stripe.model.*;
-import com.stripe.param.*;
-import com.stripe.param.checkout.SessionCreateParams;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.jni.Library;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +31,10 @@ public class LibraryApplication {
     private final Environment env;
     private static final Logger log = LoggerFactory.getLogger(LibraryApplication.class);
 
-    private final StripePaymentService paymentService;
+    private final StripePaymentIntentService paymentService;
 
     @Autowired
-    public LibraryApplication(Environment env, StripePaymentService paymentService) {
+    public LibraryApplication(Environment env, StripePaymentIntentService paymentService) {
         this.env = env;
         this.paymentService = paymentService;
     }

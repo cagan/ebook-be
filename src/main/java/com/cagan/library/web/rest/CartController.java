@@ -6,6 +6,8 @@ import com.cagan.library.domain.User;
 import com.cagan.library.repository.BookCatalogRepository;
 import com.cagan.library.repository.CartRepository;
 import com.cagan.library.repository.UserRepository;
+import com.cagan.library.security.AuthUserObject;
+import com.cagan.library.security.AuthoritiesConstants;
 import com.cagan.library.security.SecurityUtils;
 import com.cagan.library.service.BookService;
 import com.cagan.library.service.CartService;
@@ -53,21 +55,13 @@ public class CartController {
     @GetMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CartView> getCartItems() {
-        User user = SecurityUtils.getCurrentUserLogin()
-                .flatMap(userRepository::findOneByLogin)
-                .orElseThrow(() -> new BadRequestAlertException("Bad request", "User", "USER_NOT_FOUND_WITH_LOGIN"));
-
-        return ResponseEntity.ok(cartService.getCartView(user));
+        return ResponseEntity.ok(cartService.getCartView(AuthUserObject.getUser()));
     }
 
     @PutMapping("/update/{cartItemId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CartView> updateCartItem(@PathVariable("cartItemId") Long cartItemId, @Valid @RequestBody UpdateCartItemRequest request) {
-        User user = SecurityUtils.getCurrentUserLogin()
-                .flatMap(userRepository::findOneByLogin)
-                .orElseThrow(() -> new BadRequestAlertException("Bad request", "User", "USER_NOT_FOUND_WITH_LOGIN"));
-
-       Cart cart = cartRepository.findByIdAndUser(cartItemId, user)
+       Cart cart = cartRepository.findByIdAndUser(cartItemId, AuthUserObject.getUser())
                .orElseThrow(() -> new BadRequestAlertException("Bad request", "Cart", "CART_ITEM_NOT_FOUND"));
 
        if (request.getQuantity().equals(0)) {
@@ -81,11 +75,7 @@ public class CartController {
     @DeleteMapping("/delete/{cartItemId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deleteCartItem(@PathVariable("cartItemId") Long cartItemId) {
-        User user = SecurityUtils.getCurrentUserLogin()
-                .flatMap(userRepository::findOneByLogin)
-                .orElseThrow(() -> new BadRequestAlertException("Bad request", "User", "USER_NOT_FOUND_WITH_LOGIN"));
-
-        Cart cart = cartRepository.findByIdAndUser(cartItemId, user)
+        Cart cart = cartRepository.findByIdAndUser(cartItemId, AuthUserObject.getUser())
                 .orElseThrow(() -> new BadRequestAlertException("Bad request", "Cart", "CART_ITEM_NOT_FOUND"));
 
         cartService.deleteCartItem(cart);
@@ -94,13 +84,9 @@ public class CartController {
     }
 
     @DeleteMapping("/delete")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> emptyCart() {
-        User user = SecurityUtils.getCurrentUserLogin()
-                .flatMap(userRepository::findOneByLogin)
-                .orElseThrow(() -> new BadRequestAlertException("Bad request", "User", "USER_NOT_FOUND_WITH_LOGIN"));
-
-        cartService.deleteUserCartItems(user);
-
+        cartService.deleteUserCartItems(AuthUserObject.getUser());
         return ResponseEntity.ok().build();
     }
 }

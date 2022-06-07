@@ -1,5 +1,8 @@
-package com.cagan.library.integration.stripe;
+package com.cagan.library.integration.stripe.service;
 
+import com.cagan.library.integration.stripe.CardPaymentObject;
+import com.cagan.library.integration.stripe.CheckoutItem;
+import com.cagan.library.integration.stripe.PaymentIntentObject;
 import com.cagan.library.service.dto.request.paymentintent.InitialPaymentIntentRequest;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -15,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class StripePaymentService {
+public class StripePaymentIntentService {
     @Value("${stripe.secret_key}")
     private String apiKey;
 
