@@ -16,6 +16,7 @@ import com.cagan.library.web.errors.BadRequestAlertException;
 import com.stripe.exception.InvalidRequestException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/v1/order")
 @RequiredArgsConstructor
+@Api(tags = "Order")
 public class OrderController {
     private final UserRepository userRepository;
     private final OrderService orderService;

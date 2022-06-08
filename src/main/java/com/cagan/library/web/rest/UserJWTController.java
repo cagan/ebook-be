@@ -5,6 +5,7 @@ import com.cagan.library.security.jwt.TokenProvider;
 import com.cagan.library.service.dto.vm.LoginVM;
 import com.cagan.library.web.errors.BadRequestAlertException;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1")
+@Api(tags = "UserJWT")
 public class UserJWTController {
     private static final Logger log = LoggerFactory.getLogger(UserJWTController.class);
     private final TokenProvider tokenProvider;

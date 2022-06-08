@@ -10,7 +10,7 @@ public interface ApplicationDefaults {
     }
 
     interface ClientApp {
-        String name = "ebook-be";
+        String name = "EBook Backend API";
     }
 
     interface Registry {

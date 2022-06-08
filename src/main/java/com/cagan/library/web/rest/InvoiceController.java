@@ -8,6 +8,7 @@ import com.cagan.library.service.CartService;
 import com.cagan.library.service.InvoiceService;
 import com.cagan.library.service.dto.view.CartView;
 import com.cagan.library.web.errors.BadRequestAlertException;
+import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,14 +16,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/api/v1/invoice")
 @AllArgsConstructor
+@Api(tags = "Invoice")
 public class InvoiceController {
 
     private final InvoiceService checkoutService;

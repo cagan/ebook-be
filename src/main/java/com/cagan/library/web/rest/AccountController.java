@@ -5,6 +5,7 @@ import com.cagan.library.publisher.AccountPublisher;
 import com.cagan.library.service.UserService;
 import com.cagan.library.web.errors.InvalidPasswordException;
 import com.cagan.library.service.dto.vm.ManagedUserVM;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/user")
+@Api(tags = "Account")
 public class AccountController {
     private static class AccountControllerException extends RuntimeException {
         private AccountControllerException(String message) {

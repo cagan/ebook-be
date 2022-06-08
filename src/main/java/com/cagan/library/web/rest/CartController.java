@@ -16,6 +16,7 @@ import com.cagan.library.service.dto.request.UpdateCartItemRequest;
 import com.cagan.library.service.dto.view.CartView;
 import com.cagan.library.service.dto.view.MessageResponse;
 import com.cagan.library.web.errors.BadRequestAlertException;
+import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +27,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/v1/cart")
 @AllArgsConstructor
+@Api(tags = "Cart")
 public class CartController {
     private final UserRepository userRepository;
     private final BookCatalogRepository bookCatalogRepository;
