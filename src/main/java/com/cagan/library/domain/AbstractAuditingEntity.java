@@ -1,8 +1,10 @@
 package com.cagan.library.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.time.TimeZones;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -15,6 +17,7 @@ import javax.persistence.MappedSuperclass;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.TimeZone;
 
 @Getter
 @Setter
@@ -33,6 +36,8 @@ public class AbstractAuditingEntity implements Serializable {
     @Column(name = "created_date", updatable = false)
     @JsonIgnore
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = )
     private Instant createdDate = Instant.now();
 
     @LastModifiedBy
@@ -44,5 +49,6 @@ public class AbstractAuditingEntity implements Serializable {
     @Column(name = "last_modified_date")
     @JsonIgnore
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Instant lastModifiedDate = Instant.now();
 }

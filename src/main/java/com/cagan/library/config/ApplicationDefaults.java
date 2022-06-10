@@ -1,7 +1,5 @@
 package com.cagan.library.config;
 
-import liquibase.pro.packaged.A;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +10,7 @@ public interface ApplicationDefaults {
     }
 
     interface ClientApp {
-        String name = "ebook-be";
+        String name = "EBook Backend API";
     }
 
     interface Registry {

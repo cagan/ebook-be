@@ -82,6 +82,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "reset_date")
     private Instant resetDate = null;
 
+    @Column(name = "stripe_customer_id")
+    private String customerId;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -92,7 +95,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
 //    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
-
 
     @JsonIgnore
     @ManyToMany

@@ -10,7 +10,7 @@ import com.cagan.library.repository.BookRepository;
 import com.cagan.library.service.dto.request.BookItemRequest;
 import com.cagan.library.integration.s3.ObjectLocator;
 import com.cagan.library.integration.s3.ObjectLocatorUtils;
-import com.cagan.library.integration.s3.S3ClientService;
+import com.cagan.library.integration.s3.service.S3ClientService;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +49,7 @@ public class BookService {
         book.setObjectLocator(locator);
         bookRepository.save(book);
         log.info("New book created to the table: [BOOK: {}]", book);
+//        book.setBookCatalog(bookCatalog);
 
         var bookInSystem = new BookInSystem();
         bookInSystem.setIsAvailable(true);

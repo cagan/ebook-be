@@ -15,6 +15,7 @@ import com.cagan.library.service.BookService;
 import com.cagan.library.service.dto.request.DownloadBookRequest;
 import com.cagan.library.util.HeaderUtil;
 import com.cagan.library.web.errors.BadRequestAlertException;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/v1/book")
 @RequiredArgsConstructor
+@Api(tags = "Book")
 public class BookController {
     private final BookService bookService;
     private final BookInSystemRepository bookInSystemRepository;
@@ -119,7 +121,7 @@ public class BookController {
     }
 
     @GetMapping("/is-system/{book_catalog_id}")
-    public Map<String, Boolean> isBookInTheSystem(@PathVariable("book_catalog_id") long bookCatalogId) {
+    public Map<String, Boolean> isBookInTheSystem(@PathVariable("book_catalog_id") long bookCatalogId) throws InterruptedException {
         Map<String, Boolean> responseMap = new HashMap<>();
         boolean exists = bookService.isBookInSystem(bookCatalogId);
         responseMap.put("in_the_system", exists);

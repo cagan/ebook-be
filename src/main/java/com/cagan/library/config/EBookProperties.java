@@ -19,6 +19,14 @@ public class EBookProperties {
 
     @Getter
     @Setter
+    public static class Application {
+        public static final String name = ApplicationDefaults.ClientApp.name;
+        public static final String description = "REST API for E-Book Application";
+        public static final String version = "1.0.0";
+    }
+
+    @Getter
+    @Setter
     public static class Security {
         private final String contentSecurityPolicy = "default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:";
         private final Authentication authentication = new Authentication();

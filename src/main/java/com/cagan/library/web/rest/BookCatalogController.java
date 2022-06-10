@@ -12,6 +12,7 @@ import com.cagan.library.service.dto.view.BookCatalogView;
 import com.cagan.library.util.HeaderUtil;
 import com.cagan.library.util.PaginationUtil;
 import com.cagan.library.util.ResponseUtil;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/book-catalog")
+@Api(tags = {"BookCatalog"})
 public class BookCatalogController {
     private final BookCatalogService bookCatalogService;
     private final BookCatalogRepository bookCatalogRepository;
@@ -54,8 +56,6 @@ public class BookCatalogController {
         this.bookCatalogQueryService = bookQueryService;
         this.bookCatalogRepository = bookCatalogRepository;
     }
-
-    // TODO: cagan - Only admin can add books
 
     /**
      *

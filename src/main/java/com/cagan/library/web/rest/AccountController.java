@@ -1,9 +1,11 @@
 package com.cagan.library.web.rest;
 
 import com.cagan.library.domain.User;
+import com.cagan.library.publisher.AccountPublisher;
 import com.cagan.library.service.UserService;
 import com.cagan.library.web.errors.InvalidPasswordException;
 import com.cagan.library.service.dto.vm.ManagedUserVM;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/user")
+@Api(tags = "Account")
 public class AccountController {
     private static class AccountControllerException extends RuntimeException {
         private AccountControllerException(String message) {
@@ -27,10 +30,12 @@ public class AccountController {
 
     private final Logger logger = LoggerFactory.getLogger(AccountController.class);
     private final UserService userService;
+    private final AccountPublisher accountPublisher;
 
     @Autowired
-    public AccountController(UserService userService) {
+    public AccountController(UserService userService, AccountPublisher accountPublisher) {
         this.userService = userService;
+        this.accountPublisher = accountPublisher;
     }
 
     @PostMapping("/register")
@@ -42,6 +47,7 @@ public class AccountController {
 
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
         // mailService.sendActivationMail(user);
+        accountPublisher.publishAccountRegistered(user);
         return ResponseEntity.created(URI.create("/home")).build();
     }
 

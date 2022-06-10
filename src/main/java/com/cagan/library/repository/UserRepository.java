@@ -1,6 +1,7 @@
 package com.cagan.library.repository;
 
 import com.cagan.library.domain.User;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,6 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Cacheable(cacheNames = USERS_BY_EMAIL_CACHE)
     Optional<User> findOneWithAuthoritiesByLoginIgnoreCase(String login);
 
+    @Cacheable(cacheNames = USERS_BY_LOGIN_CACHE)
     Optional<User> findOneByLogin(String login);
 
     Optional<User> findOneByEmail(String email); // TODO: check email projection
@@ -44,6 +46,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select count(u) from User u where u.login = :login")
     long countUserByLogin(String login);
+
+    Optional<User> findByIdAndCustomerIdNotNull(long userId);
 
     default boolean isUserExistsByEmail(String email) {
         return countUserByEmail(email.toLowerCase()) > 0;

@@ -12,7 +12,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-
 import javax.servlet.ServletContext;
 
 @Configuration
@@ -41,7 +40,7 @@ public class WebConfigurer implements ServletContextInitializer {
 
     public void initH2Console(ServletContext servletContext) {
         log.debug("Initialize H2 console");
-        // H2ConfigurationHelper.initH2Console(servletContext);
+//         H2ConfigurationHelper.initH2Console(servletContext);
     }
 
     @Bean
