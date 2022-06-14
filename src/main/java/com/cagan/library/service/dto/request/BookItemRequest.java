@@ -6,13 +6,11 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serial;
 import java.io.Serializable;
 
 @Getter
 @Setter
 public class BookItemRequest implements Serializable {
-    @Serial
     private static final long serialVersionUID = 1L;
 
     @NotNull(message = "file is required")

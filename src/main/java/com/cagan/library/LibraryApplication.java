@@ -31,6 +31,9 @@ public class LibraryApplication {
     private final Environment env;
     private static final Logger log = LoggerFactory.getLogger(LibraryApplication.class);
 
+    @Value("${spring.datasource.url}")
+    private String datasourceUrl;
+
     private final StripePaymentIntentService paymentService;
 
     @Autowired

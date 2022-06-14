@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -59,7 +60,7 @@ public class InvoiceService {
                 .map(this::getOrCreateProduct)
                 .map(this::getOrCreatePrice)
                 .map(priceId -> createInvoiceItem(priceId, customerId))
-                .toList();
+                .collect(Collectors.toList());
 
         invoiceItemList.forEach((item) -> log.info("[INVOICE ITEM: {} CREATED FOR [USER: {}]]", item, user));
         cartService.deleteUserCartItems(user);

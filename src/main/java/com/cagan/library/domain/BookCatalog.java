@@ -10,7 +10,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cache;
 
 import javax.persistence.*;
-import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,7 +22,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class BookCatalog extends AbstractAuditingEntity implements Serializable {
-    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id

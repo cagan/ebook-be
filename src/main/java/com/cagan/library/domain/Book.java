@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import java.util.List;
 @Getter
 @Setter
 public class Book extends AbstractAuditingEntity implements Serializable {
-    @Serial
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

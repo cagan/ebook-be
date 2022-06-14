@@ -1,0 +1,65 @@
+server:
+  port: 8080
+  error:
+    include-stacktrace: NEVER
+
+spring:
+  application:
+    name: 'ebook-be'
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: false
+  sql:
+    init:
+      mode: always
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/${MYSQL_DATABASE:ebook}?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+    username: root
+    password: ${MYSQL_ROOT_PASSWORD}
+    driver-class-name: com.mysql.jdbc.Driver
+  main:
+    allow-bean-definition-overriding: true
+  cache:
+    cache-name: 'default'
+    cache-names: 'default'
+  liquibase:
+    change-log: 'classpath:/config/liquibase/master.xml'
+    driver-class-name: com.mysql.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 500MB
+ebook:
+  security:
+    authentication:
+      jwt:
+        base64-secret:
+          '6khOr6E7rEVSHH5nnDkuw4O/kIBQEN9pv6YPWsHOhobpHvF8frpLflc+4wCzqTkqvTmWJ7O5USFy3qSbDA+pNg'
+  cache:
+    redis:
+      server: 'redis://localhost:6379'
+      cluster: false
+      expiration: 3600
+s3:
+  access:
+    key: 'AKIAVNPTB2FN67YLHZEW'
+  secret:
+    key: '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'
+  connection:
+    timeout:
+      in:
+        millis: '10000'
+  socket:
+    timeout:
+      in:
+        millis: '50000'
+  bucket:
+    name: 'ebook-be-s3-bucket-2022'
+stripe:
+  secret_key:
+    sk_test_51KzV7KEbGXgbjG5sUneGs2qKd3EUnkodQ2KWF8IirIgWkIQeths0i9dnYv4urdrLZXmCKrip0EDbo8syBAJivW9D00j169vbKY

@@ -80,7 +80,6 @@ public class EBookProperties {
             private int subscriptionConnectionMinimumIdleSize;
 
             public Redis() {
-                this.server = new String[]{"redis://localhost:6379"};;
                 this.expiration = 300;
                 this.cluster = false;
                 this.connectionPoolSize = 64;

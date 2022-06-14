@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Component("userDetailsService")
 public class DomainUserDetailService implements UserDetailsService {
@@ -54,7 +55,7 @@ public class DomainUserDetailService implements UserDetailsService {
                 .getAuthorities()
                 .stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.getName()))
-                .toList();
+                .collect(Collectors.toList());
 
          return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), grantedAuthorities);
     }

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.validation.constraints.*;
-import java.io.Serial;
 import java.io.Serializable;
 
 @Data
@@ -17,7 +16,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BookCatalogRequest implements Serializable {
-    @Serial
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("id")

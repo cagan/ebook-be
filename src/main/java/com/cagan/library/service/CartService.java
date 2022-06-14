@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -52,7 +53,8 @@ public class CartService {
         List<CartItemView> cartItems = cartRepository
                 .findAllByUserOrderByCreatedDateDesc(user)
                 .stream()
-                .map((CartItemView::new)).toList();
+                .map((CartItemView::new))
+                .collect(Collectors.toList());
 
         BigDecimal totalPrice = calculateTotalPrice(cartItems);
 

@@ -27,8 +27,8 @@ import javax.cache.expiry.Duration;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
-@Configuration
-@EnableCaching
+//@Configuration
+//@EnableCaching
 public class CacheConfiguration {
     private GitProperties gitProperties;
     private BuildProperties buildProperties;

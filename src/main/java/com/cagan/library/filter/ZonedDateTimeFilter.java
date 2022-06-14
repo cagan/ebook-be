@@ -2,12 +2,10 @@ package com.cagan.library.filter;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.io.Serial;
 import java.time.ZonedDateTime;
 import java.util.List;
 
 public class ZonedDateTimeFilter extends RangeFilter<ZonedDateTime> {
-    @Serial
     private static final long serialVersionUID = 1L;
 
     public ZonedDateTimeFilter() {
