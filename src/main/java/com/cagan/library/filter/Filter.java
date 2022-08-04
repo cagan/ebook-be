@@ -2,6 +2,7 @@ package com.cagan.library.filter;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,7 +10,6 @@ import java.util.List;
 import java.util.Objects;
 
 @NoArgsConstructor
-@Data
 public class Filter<FIELD_TYPE> implements Serializable {
     private static final long SerialVersionUID = 1L;
     private FIELD_TYPE equals;
@@ -28,6 +28,51 @@ public class Filter<FIELD_TYPE> implements Serializable {
 
     public Filter<FIELD_TYPE> copy() {
         return new Filter<>(this);
+    }
+
+    public FIELD_TYPE getEquals() {
+        return equals;
+    }
+
+    public Filter<FIELD_TYPE> setEquals(FIELD_TYPE equals) {
+        this.equals = equals;
+        return this;
+    }
+
+    public FIELD_TYPE getNotEquals() {
+        return notEquals;
+    }
+
+    public Filter<FIELD_TYPE> setNotEquals(FIELD_TYPE notEquals) {
+        this.notEquals = notEquals;
+        return this;
+    }
+
+    public Boolean getSpecified() {
+        return specified;
+    }
+
+    public Filter<FIELD_TYPE> setSpecified(Boolean specified) {
+        this.specified = specified;
+        return this;
+    }
+
+    public List<FIELD_TYPE> getIn() {
+        return in;
+    }
+
+    public Filter<FIELD_TYPE> setIn(List<FIELD_TYPE> in) {
+        this.in = in;
+        return this;
+    }
+
+    public List<FIELD_TYPE> getNotIn() {
+        return notIn;
+    }
+
+    public Filter<FIELD_TYPE> setNotIn(List<FIELD_TYPE> notIn) {
+        this.notIn = notIn;
+        return this;
     }
 
     public boolean equals(Object o) {
