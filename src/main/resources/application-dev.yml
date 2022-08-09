@@ -4,6 +4,8 @@ server:
     include-stacktrace: NEVER
 
 spring:
+  config:
+    import: optional:secrets.yml
   application:
     name: 'ebook-be'
   jpa:
