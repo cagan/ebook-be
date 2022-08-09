@@ -36,21 +36,11 @@ spring:
     multipart:
       max-file-size: 500MB
 ebook:
-  security:
-    authentication:
-      jwt:
-        base64-secret:
-          '6khOr6E7rEVSHH5nnDkuw4O/kIBQEN9pv6YPWsHOhobpHvF8frpLflc+4wCzqTkqvTmWJ7O5USFy3qSbDA+pNg'
   cache:
     redis:
       server: 'redis://localhost:6379'
       cluster: false
       expiration: 3600
-s3:
-  access:
-    key: 'AKIAVNPTB2FN67YLHZEW'
-  secret:
-    key: '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'
   connection:
     timeout:
       in:
@@ -61,6 +51,3 @@ s3:
         millis: '50000'
   bucket:
     name: 'ebook-be-s3-bucket-2022'
-stripe:
-  secret_key:
-    sk_test_51KzV7KEbGXgbjG5sUneGs2qKd3EUnkodQ2KWF8IirIgWkIQeths0i9dnYv4urdrLZXmCKrip0EDbo8syBAJivW9D00j169vbKY
